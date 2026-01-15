@@ -27,8 +27,7 @@ jobs:
         run: docker build -t bootcamp-logger .
 
       - name: Set ECR image URI
-        run: |
-          echo "ECR_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bootcamp-logger:latest" >> $GITHUB_ENV
+        run: echo "ECR_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bootcamp-logger:latest" >> $GITHUB_ENV
 
       - name: Tag Docker image
         run: docker tag bootcamp-logger:latest $ECR_IMAGE
