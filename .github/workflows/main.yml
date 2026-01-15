@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials
@@ -26,13 +26,17 @@ jobs:
       - name: Build Docker image
         run: docker build -t bootcamp-logger .
 
+      - name: Set ECR image URI
+        run: |
+          echo "ECR_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bootcamp-logger:latest" >> $GITHUB_ENV
+
       - name: Tag Docker image
-        run: docker tag bootcamp-logger:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bootcamp-logger:latest
+        run: docker tag bootcamp-logger:latest $ECR_IMAGE
 
       - name: Push Docker image to ECR
-        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bootcamp-logger:latest
+        run: docker push $ECR_IMAGE
 
-      - name: Run ECS Fargate task
+      - name: Run ECS task
         run: |
           SUBNET_ID=$(aws ec2 describe-subnets --region ${{ secrets.AWS_REGION }} --query 'Subnets[0].SubnetId' --output text)
           SG_ID=$(aws ec2 describe-security-groups --region ${{ secrets.AWS_REGION }} --query 'SecurityGroups[0].GroupId' --output text)
