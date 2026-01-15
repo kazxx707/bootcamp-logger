@@ -1,7 +1,7 @@
 #!/bin/sh
 while true
 do
-  echo "$(date) | INFO | Bootcamp logger running"
+  echo "$(date) | INFO | chalra h "
   sleep 5
 done
  
